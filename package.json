@@ -4,10 +4,13 @@
   "private": true,
   "dependencies": {
     "immutable": "^4.0.0-rc.12",
+    "interactjs": "^1.4.10",
+    "rc-progress": "^2.3.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.3",
     "react-scripts": "3.0.1",
+    "react-toastify": "^5.2.1",
     "redux": "^4.0.1",
     "reselect": "^4.0.0",
     "shuffle-array": "^1.0.1",
