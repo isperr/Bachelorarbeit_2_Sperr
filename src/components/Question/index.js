@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import {Map, fromJS} from 'immutable';
 import Wrapper from './Wrapper';
+import AnswerWrapper from '../QuestionComponents/AnswerWrapper';
+import AllAnswers from '../QuestionComponents/AllAnswers';
 import Button from '../../components/Button';
+import CustomToast from '../CustomToast';
 
 import {createStructuredSelector} from 'reselect'
 import {connect} from 'react-redux';
@@ -35,15 +38,32 @@ class Question extends Component{
       this.setState({
         selectedRadio: e.target.nextSibling.value
       })
+    }else if(e.target.tagName === 'DIV'){
+      let inputVal = e.target.childNodes[1].value;
+      console.log(inputVal)
+      if(inputVal){
+        this.setState({
+          selectedRadio: inputVal
+        })
+      }
+
     }else{
       console.log(e.target)
     }
   }
 
   handleNext(){
-    if(this.props.isStartEnd !== 'start'){
+
+    if(this.props.isStartEnd === 'start'){
+      this.props.nextFunc()
+    }else if(this.props.isStartEnd === 'end'){
+      let tempQuestions = new Map();
+      this.props.setQuestions(tempQuestions.toJS())
+      this.props.nextFunc()
+    }else{
       if(this.state.selectedRadio === ''){
         console.log('DONT GO FURTHER if no option is selected')
+        CustomToast('error', 'Bitte wähle eine Option aus!')
       }else{
         let questions = this.props.questions;
         let tempQuestions = new Map();
@@ -63,10 +83,6 @@ class Question extends Component{
         this.props.nextFunc()
       }
     }
-
-    if(this.props.isStartEnd === 'start'){
-      this.props.nextFunc()
-    }
   }
 
   renderStart(){
@@ -85,6 +101,7 @@ class Question extends Component{
       <Wrapper>
         Das ist der finish-screen. <br/>
         Nochmal? dann click den button dens hoffentlich bald gibt
+        <Button text={'Nochmal?'} clickFunc={this.handleNext}/>
       </Wrapper>
     )
   }
@@ -112,24 +129,24 @@ class Question extends Component{
       <Wrapper>
       <h3>Frage:</h3>
         <p>{frage}</p>
-        <div onClick={(e) => this.handleClickChange(e)}>
-          <div>
+        <AllAnswers onClick={(e) => this.handleClickChange(e)}>
+          <AnswerWrapper>
             <label>{a}</label>
             <input type="radio" name={radioName} value="a" checked={this.state.selectedRadio === 'a'} onChange={(e) => this.handleChange(e)} />
-          </div>
-          <div>
+          </AnswerWrapper>
+          <AnswerWrapper>
             <label>{b}</label>
             <input type="radio" name={radioName} value="b" checked={this.state.selectedRadio === 'b'} onChange={(e) => this.handleChange(e)} />
-          </div>
-          <div>
+          </AnswerWrapper>
+          <AnswerWrapper>
             <label>{c}</label>
             <input type="radio" name={radioName} value="c" checked={this.state.selectedRadio === 'c'} onChange={(e) => this.handleChange(e)} />
-          </div>
-          <div>
+          </AnswerWrapper>
+          <AnswerWrapper>
             <label>{d}</label>
             <input type="radio" name={radioName} value="d" checked={this.state.selectedRadio === 'd'} onChange={(e) => this.handleChange(e)} />
-          </div>
-        </div>
+          </AnswerWrapper>
+        </AllAnswers>
         <br/>
         <Button text={'Weiter'} clickFunc={this.handleNext}/>
       </Wrapper>
