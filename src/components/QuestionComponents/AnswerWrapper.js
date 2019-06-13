@@ -1,11 +1,12 @@
 import styled from 'styled-components';
-import {YELLOW} from '../../styles/variables';
+import {APPLE_GREEN} from '../../styles/variables';
 
 const AnswerWrapper = styled.div`
-  background: ${YELLOW};
+  background: ${APPLE_GREEN};
   padding: 1rem 1rem;
   margin: 0.5rem;
   border-radius: 0.5rem;
+  width: 25%;
 `;
 
 export default AnswerWrapper;
