@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import {APPLE_GREEN} from '../../styles/variables';
+import {YELLOW} from '../../styles/variables';
 
 const StyledB = styled.button`
-  background: ${APPLE_GREEN};
+  background: ${YELLOW};
   padding: 1em;
   border: none;
   border-radius: 1.5em;
