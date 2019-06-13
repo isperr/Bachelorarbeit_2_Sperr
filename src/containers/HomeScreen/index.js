@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Map, fromJS} from 'immutable';
-import shuffle from 'shuffle-array';
+import {fromJS} from 'immutable';
 import Wrapper from './Wrapper';
 import LineWrapper from './LineWrapper';
 import Logo from './Logo';
@@ -8,7 +7,7 @@ import Question from '../../components/Question';
 import Questions from '../../utils/questions.json';
 import img from '../../images/QuizMate.png';
 import CustomToastContainer from '../../components/CustomToastContainer';
-import { Line, Circle } from 'rc-progress';
+import { Line } from 'rc-progress';
 import {APPLE_GREEN, LIGHT_GRAY} from '../../styles/variables';
 
 class HomeScreen extends Component{
@@ -20,7 +19,6 @@ class HomeScreen extends Component{
     }
     this.questionList = [];
     this.getNextQuestion = this.getNextQuestion.bind(this);
-    this.getPrevQuestion = this.getPrevQuestion.bind(this);
     this.getQuestionList = this.getQuestionList.bind(this);
     this.getQuestionStart = this.getQuestionStart.bind(this);
   }
@@ -34,15 +32,6 @@ class HomeScreen extends Component{
     let questionCount = this.state.questionCount;
     this.setState({
       questionCount: questionCount+1
-    })
-  }
-
-  getPrevQuestion(){
-    console.log('getPrevQuestion')
-    let questionCount = this.state.questionCount;
-    if(questionCount > 0)
-    this.setState({
-      questionCount: questionCount-1
     })
   }
 
@@ -75,7 +64,6 @@ class HomeScreen extends Component{
   }
 
   render(){
-    // console.log(this.state.questions)
     let {questionCount} = this.state
     let currQuestion = questionCount - 1;
     console.log(questionCount)
