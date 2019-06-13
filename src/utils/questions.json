@@ -9,11 +9,14 @@
   },
   "2": {
     "nr": "2",
-    "frage": "Frage 2?",
-    "a": "Antwort a",
-    "b": "Antwort b",
-    "c": "Antwort c",
-    "d": "Antwort d"
+    "frage": "Wie viele Würfel Zucker sind in einem normalen 250ml Glas gefüllt mit Coca Cola?",
+    "dropzoneText": "Ziehe hier die Anzahl an Würfel hin:",
+    "answer": "7",
+    "numAnswers": 10,
+    "images": {
+      "question": "cola.png",
+      "answer": "cube.png"
+    }
   },
   "3": {
     "nr": "3",
