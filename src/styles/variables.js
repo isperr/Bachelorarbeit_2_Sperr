@@ -1,6 +1,6 @@
 export const YELLOW = '#ebbe00'
 export const APPLE_GREEN = '#89b635'
-export const GREEN = '#29a161'
+export const GREEN = '#349544'
 export const TURQUOISE = '#008679'
 export const BLUE = '#006776'
 export const DARK_BLUE = '#2f4858'
