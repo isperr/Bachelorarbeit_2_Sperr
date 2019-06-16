@@ -2,11 +2,21 @@ import React, {Component} from 'react';
 import {Map, fromJS} from 'immutable';
 import PropTypes from 'prop-types';
 import Wrapper from './Wrapper';
+import HeaderImg from './HeaderImg';
+import AnswerImg from './AnswerImg';
 import AnswerWrapper from '../QuestionComponents/AnswerWrapper';
 import AllAnswers from '../QuestionComponents/AllAnswers';
 import Button from '../../components/Button';
 import CustomToast from '../CustomToast';
 import DragAndDrop from '../DragAndDrop';
+import cola from '../../images/cola.png';
+import sweet_foods from '../../images/sweet_foods.jpg';
+import teeth from '../../images/teeth.jpg';
+import vitamins from '../../images/vitamins.jpg';
+import burger_fries from '../../images/burger_fries.png';
+import chocolate_sweets from '../../images/chocolate_sweets.png';
+import fruits_veggies from '../../images/fruits_veggies.png';
+import pizza from '../../images/pizza.png';
 
 import $ from 'jquery';
 
@@ -14,6 +24,8 @@ import {createStructuredSelector} from 'reselect'
 import {connect} from 'react-redux';
 import {makeSelectQuestions} from '../../containers/Root/selectors'
 import {setQuestions} from '../../containers/Root/actions';
+
+let headerImg = '';
 
 class Question extends Component{
   constructor(props){
@@ -26,12 +38,37 @@ class Question extends Component{
     this.getCubeCount = this.getCubeCount.bind(this);
     this.handleNextStartEnd = this.handleNextStartEnd.bind(this);
     this.setItemsDropped = this.setItemsDropped.bind(this);
+    this.createAnswers = this.createAnswers.bind(this);
+    this.getImg = this.getImg.bind(this);
     this.state = {
       selectedRadio: '',
       isOneCubeOk: false
     }
     this.cubeCount = 0;
     this.itemsDropped = new Map();
+    this.answerList = [];
+  }
+
+  getImg(img){
+    console.log(img)
+    switch (img) {
+      case 'sweet_foods':
+        return sweet_foods;
+      case 'teeth':
+        return teeth;
+      case 'vitamins':
+        return vitamins;
+      case 'burger_fries':
+        return burger_fries;
+      case 'chocolate_sweets':
+        return chocolate_sweets;
+      case 'fruits_veggies':
+        return fruits_veggies;
+      case 'pizza':
+        return pizza;
+      default:
+        console.log('no img found');
+    }
   }
 
   handleChange(e){
@@ -159,6 +196,35 @@ class Question extends Component{
     return cubeCount.toString();
   }
 
+  createAnswers(radioName, answers, images){
+    let tempList = []
+    let imgMap = fromJS(images);
+    imgMap.map((v, k) => {
+      console.log('v: ' + v + ', k: '+ k)
+    })
+    console.log('createAnswers')
+
+    let letters = ['a', 'b', 'c', 'd']
+    for(let i = 0; i < answers.length; i++){
+      let currAnswer = answers[i];
+      let answerName = letters[i];
+
+      let imgName = imgMap.get(answerName);
+
+      if(currAnswer){// if answer a, b, c, d exists
+        let answerImg = imgName ? <AnswerImg src={this.getImg(imgName)} alt='' /> : null;
+        tempList.push(
+          <AnswerWrapper className={'answer'} key={currAnswer}>
+            <label>{currAnswer}</label>
+            <input type="radio" name={radioName} value={answerName} checked={this.state.selectedRadio === answerName} onChange={(e) => this.handleChange(e)} />
+            {answerImg}
+          </AnswerWrapper>);
+      }
+    }
+
+    this.answerList = tempList;
+  }
+
   render(){
     let {isStartEnd} = this.props;
     if(isStartEnd === 'start'){
@@ -177,13 +243,26 @@ class Question extends Component{
         b = question.b,
         c = question.c,
         d = question.d,
-        radioName = 'q' + question.nr;
+        radioName = 'q' + question.nr,
+        images = question.images,
+        header = images.header ? images.header : '';
+        console.log('header', header)
+
+        if(!this.props.isStartEnd){
+          console.log('uisadh')
+          if(a){
+            this.createAnswers(radioName, [a, b, c, d], images);
+          }
+        }
+
+        let headerImg = header !== '' ? <HeaderImg src={this.getImg(header)} alt='' /> : null;
 
     if(!a){
       return(
         <Wrapper>
           <h3>Frage:</h3>
           <p>{frage}</p>
+          <img style={{height: '7rem'}} src={cola} alt=''/>
           <DragAndDrop dropzoneText={question.dropzoneText} numAnswers={question.numAnswers} setItemsDropped={this.setItemsDropped}/>
           <Button text={'Weiter'} clickFunc={this.handleNext}/>
         </Wrapper>
@@ -193,23 +272,9 @@ class Question extends Component{
       <Wrapper>
         <h3>Frage:</h3>
         <p>{frage}</p>
+        {headerImg}
         <AllAnswers onClick={(e) => this.handleClickChange(e)}>
-          <AnswerWrapper className={'answer'}>
-            <label>{a}</label>
-            <input type="radio" name={radioName} value="a" checked={this.state.selectedRadio === 'a'} onChange={(e) => this.handleChange(e)} />
-          </AnswerWrapper>
-          <AnswerWrapper className={'answer'}>
-            <label>{b}</label>
-            <input type="radio" name={radioName} value="b" checked={this.state.selectedRadio === 'b'} onChange={(e) => this.handleChange(e)} />
-          </AnswerWrapper>
-          <AnswerWrapper className={'answer'}>
-            <label>{c}</label>
-            <input type="radio" name={radioName} value="c" checked={this.state.selectedRadio === 'c'} onChange={(e) => this.handleChange(e)} />
-          </AnswerWrapper>
-          <AnswerWrapper className={'answer'}>
-            <label>{d}</label>
-            <input type="radio" name={radioName} value="d" checked={this.state.selectedRadio === 'd'} onChange={(e) => this.handleChange(e)} />
-          </AnswerWrapper>
+          {this.answerList}
         </AllAnswers>
         <br/>
         <Button text={'Weiter'} clickFunc={this.handleNext}/>
