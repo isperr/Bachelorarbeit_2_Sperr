@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 
 const AllAnswers = styled.div`
-  min-height: 10rem;
-  /* width: 50%; */
+  min-height: 18rem;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
 `;
 
 export default AllAnswers;
