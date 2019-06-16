@@ -1,11 +1,17 @@
 {
   "1": {
     "nr": "1",
-    "frage": "Frage 1?",
-    "a": "Antwort a",
-    "b": "Antwort b",
-    "c": "Antwort c",
-    "d": "Antwort d"
+    "frage": "Welches Essen ist am besten für dich und solltest du deshalb täglich essen?",
+    "a": "Schokolade und andere Süßigkeiten",
+    "b": "Burger und Pommes",
+    "c": "Gemüse und Obst",
+    "d": "Pizza",
+    "images": {
+      "a": "chocolate_sweets",
+      "b": "burger_fries",
+      "c": "fruits_veggies",
+      "d": "pizza"
+    }
   },
   "2": {
     "nr": "2",
@@ -14,32 +20,37 @@
     "answer": "7",
     "numAnswers": 10,
     "images": {
-      "question": "cola.png",
-      "answer": "cube.png"
+      "question": "cola",
+      "answer": "cube"
     }
   },
   "3": {
     "nr": "3",
-    "frage": "Frage 3?",
-    "a": "Antwort a",
-    "b": "Antwort b",
-    "c": "Antwort c",
-    "d": "Antwort d"
+    "frage": "Eine einseitige Ernährung (immer nur Burger oder immer nur Süßigkeiten essen) ist sehr gesund. Wahr oder falsch?",
+    "a": "Wahr, klar ist Schokolade essen total gesund!",
+    "b": "Falsch, man sollte sich abwechslungsreich ernähren und auf Obst und Gemüse nicht vergessen!",
+    "images": {
+      "header": "sweet_foods"
+    }
   },
   "4": {
     "nr": "4",
-    "frage": "Frage 4?",
-    "a": "Antwort a",
-    "b": "Antwort b",
-    "c": "Antwort c",
-    "d": "Antwort d"
+    "frage": "Wie Oft solltest du deine Zähne putzen?",
+    "a": "Einmal pro Woche reicht vollkommen",
+    "b": "2 bis 3 mal täglich, immer nach den Mahlzeiten",
+    "c": "Nie",
+    "d": "Jeden zweiten Tag",
+    "images": {
+      "header": "teeth"
+    }
   },
   "5": {
     "nr": "5",
-    "frage": "Frage 5?",
-    "a": "Antwort a",
-    "b": "Antwort b",
-    "c": "Antwort c",
-    "d": "Antwort d"
+    "frage": "Um dem Gehirn bei seiner Arbeit zu helfen, können wir Vitamine in Form von Obst und Gemüse essen. Stimmt das?",
+    "a": "Nein, Vitamine helfen nicht, aber fettiges Essen wie Pommes helfen dabei.",
+    "b": "Ja. Vor allem die Vitamine A, C und E helfen unserem Gehirn beim Arbeiten.",
+    "images": {
+      "header": "vitamins"
+    }
   }
 }
