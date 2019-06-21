@@ -1,8 +1,14 @@
 import React, {Component} from 'react';
+import {Map, fromJS} from 'immutable';
 import PropTypes from 'prop-types';
 import Wrapper from './Wrapper';
+import QuestionWrapper from './QuestionWrapper';
+import Text from './Text'
+import QuestionText from './QuestionText'
 import Content from './Content';
+import MiniHeading from './MiniHeading';
 import Button from '../Button';
+import Questions from '../../utils/questions.json';
 
 class Evaluation extends Component{
   constructor(props){
@@ -11,27 +17,45 @@ class Evaluation extends Component{
       correctGivenAnswerCount: 0
     }
     this.resultList = [];
+    this.getAnswersAndQuestions = this.getAnswersAndQuestions.bind(this);
+    this.getResults = this.getResults.bind(this);
   }
 
   componentWillMount(){
+    this.getResults()
+  }
+
+  getResults(){
     let correctGivenAnswerCount = 0,
         givenAnswers = this.props.givenAnswers,
         correctAnswers = this.props.correctAnswers,
         tempList = [];
+    let questions = fromJS(Questions);
 
     givenAnswers.map((v, k) => {
-      let corrAnswer = correctAnswers.get(k);
-      console.log('v', v)
-      console.log('corrAnswer', corrAnswer)
+      let corrAnswer = correctAnswers.get(k),
+          questionInfo = questions.get(k),
+          question = questionInfo.get('frage'),
+          correctAnswerVal = questionInfo.get(corrAnswer),
+          evalText = [],
+          backgroundColor = 'yellowgreen';
+          
+      if(!correctAnswerVal || correctAnswerVal === ''){
+        correctAnswerVal = questionInfo.get('antwort') + " Würfel";
+      }
+
       if(v === corrAnswer){
         correctGivenAnswerCount = correctGivenAnswerCount + 1;
+        evalText.push(<QuestionText key={k}>Korrekt beantwortet! - {correctAnswerVal}</QuestionText>)
+      }else{
+        evalText.push(<QuestionText key={k}>Leider war deine Antwort falsch! - Richtig wäre: {correctAnswerVal}</QuestionText>)
+        backgroundColor = 'orangered';
       }
       tempList.push(
-        <div key={k}>
-          <h3>Frage: {k} </h3>
-          <p>Given: {v}</p>
-          <p>Correct: {corrAnswer}</p>
-        </div>)
+        <QuestionWrapper key={k} background={backgroundColor}>
+          <MiniHeading>Frage {k}: {question}</MiniHeading>
+          {evalText}
+        </QuestionWrapper>)
       return true; // satisfy arrow-map
     })
 
@@ -41,13 +65,30 @@ class Evaluation extends Component{
     })
   }
 
+  getAnswersAndQuestions(){ // get correct answers from json file
+    let {questions} = this.state;
+    let answerMap = new Map(),
+        questionMap = new Map();
+
+    questions.map((v, k) => {
+      let answer = v.get('antwort'),
+          question = v.get('frage');
+      answerMap = answerMap.set(k, answer)
+      questionMap = questionMap.set(k, question)
+      return true; // satisfy arrow-func
+    })
+
+    return [answerMap, questionMap];
+  }
+
   render(){
     console.log(this.props)
     return(
       <Wrapper>
+        <h2>Das wars!</h2>
         <Content>
-          Richtige Antworten:
-          {this.state.correctGivenAnswerCount}
+          <Text>Du hast {this.state.correctGivenAnswerCount} von 5 Fragen richtig beantwortet! </Text>
+          <Text>Hier kannst du noch einmal sehen welche richtig waren und welche du dir noch einmal ansehen könntest: </Text>
           {this.state.resultList}
         </Content>
         <b>Willst du das Quiz noch einmal starten?</b>
