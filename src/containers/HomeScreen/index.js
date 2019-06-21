@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
-import {fromJS} from 'immutable';
+import {Map, fromJS} from 'immutable';
 import Wrapper from './Wrapper';
 import LineWrapper from './LineWrapper';
-import Logo from './Logo';
 import Question from '../../components/Question';
 import Questions from '../../utils/questions.json';
-import img from '../../images/QuizMate.png';
 import CustomToastContainer from '../../components/CustomToastContainer';
 import { Line } from 'rc-progress';
 import {APPLE_GREEN, LIGHT_GRAY} from '../../styles/variables';
@@ -21,6 +19,7 @@ class HomeScreen extends Component{
     this.getNextQuestion = this.getNextQuestion.bind(this);
     this.getQuestionList = this.getQuestionList.bind(this);
     this.getQuestionStart = this.getQuestionStart.bind(this);
+    this.getAnswers = this.getAnswers.bind(this);
   }
 
   componentWillMount(){
@@ -57,11 +56,25 @@ class HomeScreen extends Component{
       return true;
     });
     //push finish screen to tempList
-    tempList.push(<Question isStartEnd={'end'} nextFunc={this.getQuestionStart}/>);
+    tempList.push(<Question isStartEnd={'end'} nextFunc={this.getQuestionStart} answerMap={this.getAnswers()}/>);
 
     // set questionList
     this.questionList = tempList;
   }
+
+  getAnswers(){ // get correct answers from json file
+    let {questions} = this.state;
+    let answerMap = new Map()
+
+    questions.map((v, k) => {
+      let answer = v.get('antwort')
+      answerMap = answerMap.set(k, answer)
+      return true; // satisfy arrow-func
+    })
+
+    return answerMap;
+  }
+
 
   render(){
     let {questionCount} = this.state
@@ -71,14 +84,12 @@ class HomeScreen extends Component{
 
     return(
       <Wrapper>
-        HomeScreen
-        <Logo src={img} alt={'Logo'}/>
-        <p>Erledigte Fragen in Prozent: {percent}%</p>
-        {questionCount > 0 && questionCount < 6 ? <p>Aktuelle Frage: {questionCount}/5</p> : null}
-        <LineWrapper>
-          <Line percent={percent} strokeWidth="3.5" strokeColor={APPLE_GREEN} trailWidth="3.5" trailColor={LIGHT_GRAY}/>
-        </LineWrapper>
         {this.questionList[questionCount]}
+        {questionCount > 0 && questionCount < 6 ? <p style={{zIndex: '2'}}>Aktuelle Frage: {questionCount} von 5</p> : null}
+        {questionCount > 0 && questionCount < 6 ?
+          <LineWrapper>
+            <Line percent={percent} strokeWidth="4.5" strokeColor={APPLE_GREEN} trailWidth="4.5" trailColor={LIGHT_GRAY}/>
+          </LineWrapper> : null}
         <CustomToastContainer />
       </Wrapper>
     );
