@@ -39,7 +39,7 @@ class Evaluation extends Component{
           correctAnswerVal = questionInfo.get(corrAnswer),
           evalText = [],
           backgroundColor = 'yellowgreen';
-          
+
       if(!correctAnswerVal || correctAnswerVal === ''){
         correctAnswerVal = questionInfo.get('antwort') + " Würfel";
       }
@@ -82,7 +82,6 @@ class Evaluation extends Component{
   }
 
   render(){
-    console.log(this.props)
     return(
       <Wrapper>
         <h2>Das wars!</h2>

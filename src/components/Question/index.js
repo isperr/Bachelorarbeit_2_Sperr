@@ -59,7 +59,6 @@ class Question extends Component{
   }
 
   getImg(img){
-    console.log(img)
     switch (img) {
       case 'sweet_foods':
         return sweet_foods;
@@ -81,8 +80,6 @@ class Question extends Component{
   }
 
   handleChange(e){
-    // console.log(e.target)
-    // console.log(e.target.value);
     $( ".answer" ).removeClass( "clicked" )
     e.target.parentNode.classList.add("clicked");
     this.setState({
@@ -105,19 +102,16 @@ class Question extends Component{
           selectedRadio: e.target.previousSibling.value
         })
       }else if(e.target.tagName === 'DIV' && $(e.target).hasClass( "answer" )){
-        console.log(e.target.className)
         $( ".answer" ).removeClass( "clicked" )
         e.target.classList.add("clicked");
         let inputVal = e.target.childNodes[1].value;
-        console.log(inputVal)
         if(inputVal){
           this.setState({
             selectedRadio: inputVal
           })
         }
-
       }else{
-        console.log(e.target)
+        console.log('clicked on something else', e.target)
       }
     }
   }
@@ -145,7 +139,6 @@ class Question extends Component{
 
       if(optionIsSelected){
         firstClick = false;
-        console.log('AUSWERTUNG FOLGT!');
         this.showEvaluation();
       }else{
         CustomToast(toastType, toastMsg);
@@ -208,7 +201,7 @@ class Question extends Component{
       if(!isNoCubeOk){ // make sure user is ok with adding e.g. no sugar cubes
         console.log('COLA question')
         toastType = 'warning';
-        toastMsg = 'Du hast keinen Zuckerwürfel in das Feld gezogen! Passt das so? Dann klicke erneut den WEITER Button.';
+        toastMsg = 'Du hast keinen Zuckerwürfel in das Feld gezogen! Passt das so? Dann klicke nochmal den FERTIG Button.';
         isNoCubeOk = true;
         this.setState({
           selectedRadio: selRadio
@@ -231,7 +224,6 @@ class Question extends Component{
 
   showEvaluation(){
     console.log('show Evaluation')
-    console.log(this.props)
     let correctAnswer = this.props.question.antwort;
     let answerisNum = this.checkIsNum(correctAnswer); // check if correct answer is num - and not a, b, c or d
     let givenAnswer = this.state.selectedRadio;
@@ -243,7 +235,6 @@ class Question extends Component{
     }
 
     let evaluation = '';
-    console.log('corrAnswer: ' + correctAnswer + ' - givenAnswer: ' + givenAnswer)
 
     if(correctAnswer !== givenAnswer){
       $('.clicked').css('background', 'orangered')
@@ -293,15 +284,10 @@ class Question extends Component{
   }
 
   createAnswers(radioName, answers, images){
-    let tempList = []
-    let imgMap = fromJS(images);
-    imgMap.map((v, k) => {
-      console.log('v: ' + v + ', k: '+ k)
-      return true; // satisfy arrow-func
-    })
-    console.log('createAnswers')
+    let tempList = [],
+        imgMap = fromJS(images),
+        letters = ['a', 'b', 'c', 'd'];
 
-    let letters = ['a', 'b', 'c', 'd']
     for(let i = 0; i < answers.length; i++){
       let currAnswer = answers[i];
       let answerName = letters[i];

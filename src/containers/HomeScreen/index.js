@@ -27,7 +27,6 @@ class HomeScreen extends Component{
   }
 
   getNextQuestion(){
-    console.log('getNextQuestion')
     let questionCount = this.state.questionCount;
     this.setState({
       questionCount: questionCount+1
@@ -41,7 +40,6 @@ class HomeScreen extends Component{
   }
 
   getQuestionList(){
-    console.log('getQuestionList')
     let {questions} = this.state;
     let qTemp = questions.valueSeq(),
         // shuffeldQuestions = shuffle(qTemp.toJS()),
@@ -79,7 +77,6 @@ class HomeScreen extends Component{
   render(){
     let {questionCount} = this.state
     let currQuestion = questionCount - 1;
-    console.log(questionCount)
     let percent = questionCount && currQuestion > 0 ? (currQuestion/5)*100 : 0;
 
     return(
