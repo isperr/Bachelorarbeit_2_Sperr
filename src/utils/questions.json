@@ -2,6 +2,7 @@
   "1": {
     "nr": "1",
     "frage": "Welches Essen ist am besten für dich und solltest du deshalb täglich essen?",
+    "antwort": "c",
     "a": "Schokolade und andere Süßigkeiten",
     "b": "Burger und Pommes",
     "c": "Gemüse und Obst",
@@ -16,8 +17,8 @@
   "2": {
     "nr": "2",
     "frage": "Wie viele Würfel Zucker sind in einem normalen 250ml Glas gefüllt mit Coca Cola?",
+    "antwort": "7",
     "dropzoneText": "Ziehe hier die Anzahl an Würfel hin:",
-    "answer": "7",
     "numAnswers": 10,
     "images": {
       "question": "cola",
@@ -27,7 +28,8 @@
   "3": {
     "nr": "3",
     "frage": "Eine einseitige Ernährung (immer nur Burger oder immer nur Süßigkeiten essen) ist sehr gesund. Wahr oder falsch?",
-    "a": "Wahr, klar ist Schokolade essen total gesund!",
+    "antwort": "b",
+    "a": "Wahr, klar ist nur Schokolade und Burger essen total gesund! ",
     "b": "Falsch, man sollte sich abwechslungsreich ernähren und auf Obst und Gemüse nicht vergessen!",
     "images": {
       "header": "sweet_foods"
@@ -36,10 +38,11 @@
   "4": {
     "nr": "4",
     "frage": "Wie Oft solltest du deine Zähne putzen?",
+    "antwort": "d",
     "a": "Einmal pro Woche reicht vollkommen",
-    "b": "2 bis 3 mal täglich, immer nach den Mahlzeiten",
+    "b": "Jeden zweiten Tag",
     "c": "Nie",
-    "d": "Jeden zweiten Tag",
+    "d": "2 bis 3 mal täglich, immer nach den Mahlzeiten",
     "images": {
       "header": "teeth"
     }
@@ -47,6 +50,7 @@
   "5": {
     "nr": "5",
     "frage": "Um dem Gehirn bei seiner Arbeit zu helfen, können wir Vitamine in Form von Obst und Gemüse essen. Stimmt das?",
+    "antwort": "b",
     "a": "Nein, Vitamine helfen nicht, aber fettiges Essen wie Pommes helfen dabei.",
     "b": "Ja. Vor allem die Vitamine A, C und E helfen unserem Gehirn beim Arbeiten.",
     "images": {
