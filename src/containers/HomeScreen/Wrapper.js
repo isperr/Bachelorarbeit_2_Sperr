@@ -11,6 +11,7 @@ const Wrapper = styled.div`
   min-height: stretch;
   padding-top: 2em;
   padding-bottom: 2em;
+  color: #333333;
 `;
 
 export default Wrapper;
