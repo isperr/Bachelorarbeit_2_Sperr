@@ -10,6 +10,7 @@ const Dropzone = styled.div`
   padding: 10px;
   width: stretch;
   transition: background-color 0.3s;
+  margin-bottom: 2em;
 `;
 
 export default Dropzone;

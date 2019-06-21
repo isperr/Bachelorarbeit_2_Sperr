@@ -114,7 +114,7 @@ class DragAndDrop extends Component{
   render(){
     return(
       <Wrapper id='container'>
-        <DivWrapper>
+        <DivWrapper id={'answer-wrapper'}>
           {this.answerDivs}
         </DivWrapper>
         <Dropzone id="outer-dropzone" className="dropzone">
