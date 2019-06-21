@@ -9,6 +9,9 @@ import AllAnswers from '../QuestionComponents/AllAnswers';
 import Button from '../../components/Button';
 import CustomToast from '../CustomToast';
 import DragAndDrop from '../DragAndDrop';
+import Evaluation from '../Evaluation';
+import QuestionEvaluation from '../QuestionEvaluation';
+import Start from './Start'
 import cola from '../../images/cola.png';
 import sweet_foods from '../../images/sweet_foods.jpg';
 import teeth from '../../images/teeth.jpg';
@@ -25,7 +28,8 @@ import {connect} from 'react-redux';
 import {makeSelectQuestions} from '../../containers/Root/selectors'
 import {setQuestions} from '../../containers/Root/actions';
 
-let headerImg = '';
+var firstClick = true;
+let isNoCubeOk = false;
 
 class Question extends Component{
   constructor(props){
@@ -34,7 +38,10 @@ class Question extends Component{
     this.handleClickChange = this.handleClickChange.bind(this);
     this.renderStart = this.renderStart.bind(this);
     this.renderEnd = this.renderEnd.bind(this);
-    this.handleNext = this.handleNext.bind(this);
+    this.handleNextClick = this.handleNextClick.bind(this);
+    this.checkIfOptionsSelected = this.checkIfOptionsSelected.bind(this);
+    this.checkIsNum = this.checkIsNum.bind(this);
+    this.showEvaluation = this.showEvaluation.bind(this);
     this.getCubeCount = this.getCubeCount.bind(this);
     this.handleNextStartEnd = this.handleNextStartEnd.bind(this);
     this.setItemsDropped = this.setItemsDropped.bind(this);
@@ -42,7 +49,9 @@ class Question extends Component{
     this.getImg = this.getImg.bind(this);
     this.state = {
       selectedRadio: '',
-      isOneCubeOk: false
+      displayEval: 'none',
+      buttonText: 'Fertig',
+      evaluation: null
     }
     this.cubeCount = 0;
     this.itemsDropped = new Map();
@@ -82,26 +91,34 @@ class Question extends Component{
   }
 
   handleClickChange(e){
-    if(e.target.tagName === 'LABEL'){
-      $( ".answer" ).removeClass( "clicked" )
-      e.target.parentNode.classList.add("clicked");
-      this.setState({
-        selectedRadio: e.target.nextSibling.value
-      })
-    }else if(e.target.tagName === 'DIV' && $(e.target).hasClass( "answer" )){
-      console.log(e.target.className)
-      $( ".answer" ).removeClass( "clicked" )
-      e.target.classList.add("clicked");
-      let inputVal = e.target.childNodes[1].value;
-      console.log(inputVal)
-      if(inputVal){
+    if(firstClick){
+      if(e.target.tagName === 'LABEL'){
+        $( ".answer" ).removeClass( "clicked" )
+        e.target.parentNode.classList.add("clicked");
         this.setState({
-          selectedRadio: inputVal
+          selectedRadio: e.target.nextSibling.value
         })
-      }
+      }else if(e.target.tagName === 'IMG'){
+        $( ".answer" ).removeClass( "clicked" )
+        e.target.parentNode.classList.add("clicked");
+        this.setState({
+          selectedRadio: e.target.previousSibling.value
+        })
+      }else if(e.target.tagName === 'DIV' && $(e.target).hasClass( "answer" )){
+        console.log(e.target.className)
+        $( ".answer" ).removeClass( "clicked" )
+        e.target.classList.add("clicked");
+        let inputVal = e.target.childNodes[1].value;
+        console.log(inputVal)
+        if(inputVal){
+          this.setState({
+            selectedRadio: inputVal
+          })
+        }
 
-    }else{
-      console.log(e.target)
+      }else{
+        console.log(e.target)
+      }
     }
   }
 
@@ -109,34 +126,32 @@ class Question extends Component{
     if(this.props.isStartEnd === 'start'){
       this.props.nextFunc()
     }else if(this.props.isStartEnd === 'end'){
+      // reset questions map
       let tempQuestions = new Map();
       this.props.setQuestions(tempQuestions.toJS())
       this.props.nextFunc()
     }
   }
 
-  handleNext(){
+  handleNextClick(){
     let selectedRadio = this.state.selectedRadio;
-    if(!this.props.question.a){
-      console.log(this.itemsDropped)
-      console.log()
-      selectedRadio = this.getCubeCount();
-    }else{
-      this.setState({
-        isOneCubeOk: true
-      })
-    }
-    console.log(selectedRadio)
 
-    if(selectedRadio === ''){
-      console.log('DONT GO FURTHER if no option is selected')
-      CustomToast('error', 'Bitte wähle eine Option aus!')
-    }else if(selectedRadio === '0' && !this.state.isOneCubeOk){
-      CustomToast('warning', 'Du hast keinen Zuckerwürfel in das Feld gezogen! Passt das so? Dann klicke erneut den WEITER Button.')
-      this.setState({
-        isOneCubeOk: true
-      })
+    if(firstClick){
+      console.log('This is the firstClick');
+      let check = this.checkIfOptionsSelected(selectedRadio),
+          optionIsSelected = check.get('optionSelected'),
+          toastType = check.get('toastType'),
+          toastMsg = check.get('toastMsg');
+
+      if(optionIsSelected){
+        firstClick = false;
+        console.log('AUSWERTUNG FOLGT!');
+        this.showEvaluation();
+      }else{
+        CustomToast(toastType, toastMsg);
+      }
     }else{
+      console.log('SECOND CLICK');
       let questions = this.props.questions;
       let tempQuestions = new Map();
       if(questions){
@@ -148,35 +163,116 @@ class Question extends Component{
       tempQuestions = tempQuestions.set(num, selectedRadio)
       this.props.setQuestions(tempQuestions.toJS())
 
+      // reset firstClick
+      firstClick = true;
+      isNoCubeOk = false;
       this.setState({
         selectedRadio: '',
-        isOneCubeOk: false
+        displayEval: 'none',
+        buttonText: 'Fertig'
       })
-      $( ".answer" ).removeClass( "clicked" )
-
       this.props.nextFunc()
     }
+  }
 
+  checkIsNum(answer){
+    let res = false;
+
+    if ('0123456789'.indexOf(answer) !== -1) {
+      // Is a number
+      console.log('is num')
+      res = true;
+    }
+
+    return res;
+  }
+
+  checkIfOptionsSelected(selectedRadio){
+    let optionSelected = false,
+        toastType = '',
+        toastMsg = '',
+        selRadio = selectedRadio,
+        currAnswer = this.props.question.antwort;
+
+    let answerisNum = this.checkIsNum(currAnswer); // check if correct answer is num - and not a, b, c or d
+
+    if(answerisNum){
+      selRadio = this.getCubeCount();
+    }
+
+    if(selRadio === ''){
+      console.log('DONT GO FURTHER if no option is selected')
+      toastType = 'error';
+      toastMsg = 'Du musst eine Option auswählen um fortzufahren!';
+    }else if(selRadio === '0'){
+      if(!isNoCubeOk){ // make sure user is ok with adding e.g. no sugar cubes
+        console.log('COLA question')
+        toastType = 'warning';
+        toastMsg = 'Du hast keinen Zuckerwürfel in das Feld gezogen! Passt das so? Dann klicke erneut den WEITER Button.';
+        isNoCubeOk = true;
+        this.setState({
+          selectedRadio: selRadio
+        })
+      }else{
+        optionSelected = true;
+      }
+    }else{
+      optionSelected = true;
+    }
+
+    let resultMap = new Map({
+      optionSelected: optionSelected,
+      toastType: toastType,
+      toastMsg: toastMsg
+    })
+
+    return resultMap;
+  }
+
+  showEvaluation(){
+    console.log('show Evaluation')
+    console.log(this.props)
+    let correctAnswer = this.props.question.antwort;
+    let answerisNum = this.checkIsNum(correctAnswer); // check if correct answer is num - and not a, b, c or d
+    let givenAnswer = this.state.selectedRadio;
+
+    if(answerisNum){
+      givenAnswer = this.getCubeCount();
+      let children = $('#answer-wrapper').children();
+      children.removeClass('drag-drop')
+    }
+
+    let evaluation = '';
+    console.log('corrAnswer: ' + correctAnswer + ' - givenAnswer: ' + givenAnswer)
+
+    if(correctAnswer !== givenAnswer){
+      $('.clicked').css('background', 'orangered')
+      if(answerisNum){
+        evaluation = `Schade, deine Antwort war leider nicht richtig! Richtig wäre die Zahl ${correctAnswer}!`;
+      }else{
+        evaluation = `Schade, deine Antwort war leider nicht richtig! Richtig wäre Antwort ${correctAnswer} - ${this.props.question[correctAnswer]}!`
+      }
+    }else{
+      $('.clicked').css('background', 'yellowgreen')
+      evaluation = 'Super! Du hast diese Frage richtig beantwortet.'
+    }
+
+    this.setState({
+      evaluation: evaluation,
+      displayEval: 'flex',
+      buttonText: 'Weiter'
+    })
   }
 
   renderStart(){
     return(
-      <Wrapper>
-        Das ist der START-screen. <br/>
-        Lets start this quiz
-        <b>Klicke den Button um das Quiz zu starten:</b>
-        <Button text={'Starte das Quiz'} clickFunc={this.handleNextStartEnd}/>
-      </Wrapper>
+      <Start clickFunc={this.handleNextStartEnd}/>
     )
   }
 
   renderEnd(){
     return(
-      <Wrapper>
-        Das ist der finish-screen. <br/>
-        Nochmal? dann click den button dens hoffentlich bald gibt
-        <Button text={'Nochmal?'} clickFunc={this.handleNextStartEnd}/>
-      </Wrapper>
+      <Evaluation correctAnswers={this.props.answerMap} givenAnswers={new Map(this.props.questions)} clickFunc={this.handleNextStartEnd}/>
     )
   }
 
@@ -201,6 +297,7 @@ class Question extends Component{
     let imgMap = fromJS(images);
     imgMap.map((v, k) => {
       console.log('v: ' + v + ', k: '+ k)
+      return true; // satisfy arrow-func
     })
     console.log('createAnswers')
 
@@ -226,7 +323,7 @@ class Question extends Component{
   }
 
   render(){
-    let {isStartEnd} = this.props;
+    let {isStartEnd, question} = this.props;
     if(isStartEnd === 'start'){
       return(
         this.renderStart()
@@ -237,7 +334,6 @@ class Question extends Component{
         this.renderEnd()
       )
     }
-    let question = this.props.question;
     let frage = question.frage,
         a = question.a,
         b = question.b,
@@ -246,30 +342,30 @@ class Question extends Component{
         radioName = 'q' + question.nr,
         images = question.images,
         header = images.header ? images.header : '';
-        console.log('header', header)
 
-        if(!this.props.isStartEnd){
-          console.log('uisadh')
-          if(a){
-            this.createAnswers(radioName, [a, b, c, d], images);
-          }
-        }
+    if(!this.props.isStartEnd){
+      if(a){
+        this.createAnswers(radioName, [a, b, c, d], images);
+      }
+    }
 
-        let headerImg = header !== '' ? <HeaderImg src={this.getImg(header)} alt='' /> : null;
+    let headerImg = header !== '' ? <HeaderImg src={this.getImg(header)} alt='' /> : null;
+    let {displayEval, evaluation, buttonText} = this.state;
 
     if(!a){
       return(
-        <Wrapper>
+        <Wrapper id={'question'}>
           <h3>Frage:</h3>
           <p>{frage}</p>
           <img style={{height: '7rem'}} src={cola} alt=''/>
           <DragAndDrop dropzoneText={question.dropzoneText} numAnswers={question.numAnswers} setItemsDropped={this.setItemsDropped}/>
-          <Button text={'Weiter'} clickFunc={this.handleNext}/>
+          <Button text={buttonText} clickFunc={this.handleNextClick}/>
+          <QuestionEvaluation id={'question-evaluation'} display={displayEval} evaluation={evaluation}/>
         </Wrapper>
       );
     }
     return(
-      <Wrapper>
+      <Wrapper id={'question'}>
         <h3>Frage:</h3>
         <p>{frage}</p>
         {headerImg}
@@ -277,18 +373,26 @@ class Question extends Component{
           {this.answerList}
         </AllAnswers>
         <br/>
-        <Button text={'Weiter'} clickFunc={this.handleNext}/>
+        <Button text={buttonText} clickFunc={this.handleNextClick}/>
+        <QuestionEvaluation id={'question-evaluation'} display={displayEval} evaluation={evaluation}/>
       </Wrapper>
     );
   }
 }
 
 Question.propTypes = {
-  nextFunc: PropTypes.func
+  nextFunc: PropTypes.func,
+  isStartEnd: PropTypes.string,
+  question: PropTypes.object,
+  answerMap: PropTypes.instanceOf(Map),
+
 };
 
 Question.defaultProps = {
-  nextFunc: null
+  nextFunc: null,
+  isStartEnd: '',
+  question: {},
+  answerMap: new Map()
 };
 
 const mapDispatchToProps = dispatch => ({
