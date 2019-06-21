@@ -51,7 +51,7 @@ class Evaluation extends Component{
           {this.state.resultList}
         </Content>
         <b>Willst du das Quiz noch einmal starten?</b>
-        <Button text={'Zurück zum Anfang'} clickFunc={this.clickFunc}/>
+        <Button text={'Zurück zum Anfang'} clickFunc={this.props.clickFunc}/>
       </Wrapper>
     );
   }
