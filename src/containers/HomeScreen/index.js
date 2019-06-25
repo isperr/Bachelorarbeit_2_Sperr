@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
 import {Map, fromJS} from 'immutable';
 import Wrapper from './Wrapper';
-import LineWrapper from './LineWrapper';
 import Question from '../../components/Question';
 import Questions from '../../utils/questions.json';
 import CustomToastContainer from '../../components/CustomToastContainer';
-import { Line } from 'rc-progress';
-import {APPLE_GREEN, LIGHT_GRAY} from '../../styles/variables';
 
 class HomeScreen extends Component{
   constructor(props){
@@ -76,17 +73,11 @@ class HomeScreen extends Component{
 
   render(){
     let {questionCount} = this.state
-    let currQuestion = questionCount - 1;
-    let percent = questionCount && currQuestion > 0 ? (currQuestion/5)*100 : 0;
 
     return(
       <Wrapper>
         {this.questionList[questionCount]}
-        {questionCount > 0 && questionCount < 6 ? <p style={{zIndex: '2'}}>Aktuelle Frage: {questionCount} von 5</p> : null}
-        {questionCount > 0 && questionCount < 6 ?
-          <LineWrapper>
-            <Line percent={percent} strokeWidth="4.5" strokeColor={APPLE_GREEN} trailWidth="4.5" trailColor={LIGHT_GRAY}/>
-          </LineWrapper> : null}
+
         <CustomToastContainer />
       </Wrapper>
     );
