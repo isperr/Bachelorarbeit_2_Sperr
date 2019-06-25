@@ -1,18 +1,16 @@
 import styled from 'styled-components';
-import {OLIVE} from '../../styles/variables';
 
 const Wrapper = styled.div`
-  background: ${OLIVE};
-  width: 70%;
-  padding: 1em;
   display: flex;
-  flex-direction: column;
+  width: 90%;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  border-radius: 1rem;
-  min-height: 22rem;
-  justify-content: center;
-  font-size: large;
+
+  @media screen and (max-width: 600px) {
+    flex-direction: column-reverse;
+    align-items: space-between;
+    justify-content: center;
+  }
 `;
 
 export default Wrapper;

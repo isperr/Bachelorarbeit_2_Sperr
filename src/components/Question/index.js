@@ -2,16 +2,16 @@ import React, {Component} from 'react';
 import {Map, fromJS} from 'immutable';
 import PropTypes from 'prop-types';
 import Wrapper from './Wrapper';
+import Content from './Content';
 import HeaderImg from './HeaderImg';
 import AnswerImg from './AnswerImg';
 import AnswerWrapper from '../QuestionComponents/AnswerWrapper';
 import AllAnswers from '../QuestionComponents/AllAnswers';
 import Button from '../../components/Button';
-import CustomToast from '../CustomToast';
 import DragAndDrop from '../DragAndDrop';
 import Evaluation from '../Evaluation';
-import QuestionEvaluation from '../QuestionEvaluation';
 import Start from './Start'
+import HelperSection from '../HelperSection';
 import cola from '../../images/cola.png';
 import sweet_foods from '../../images/sweet_foods.jpg';
 import teeth from '../../images/teeth.jpg';
@@ -49,9 +49,9 @@ class Question extends Component{
     this.getImg = this.getImg.bind(this);
     this.state = {
       selectedRadio: '',
-      displayEval: 'none',
       buttonText: 'Fertig',
-      evaluation: null
+      evaluation: 'Wähle eine der Antworten aus!',
+      heading: ''
     }
     this.cubeCount = 0;
     this.itemsDropped = new Map();
@@ -128,6 +128,7 @@ class Question extends Component{
   }
 
   handleNextClick(){
+
     let selectedRadio = this.state.selectedRadio;
 
     if(firstClick){
@@ -141,7 +142,16 @@ class Question extends Component{
         firstClick = false;
         this.showEvaluation();
       }else{
-        CustomToast(toastType, toastMsg);
+        this.setState({
+          evaluation: toastMsg,
+          heading: 'Achtung!'
+        })
+        if(toastType === 'error'){
+          $('#bubble').addClass('bubble-danger')
+        }
+        if(toastType === 'warning'){
+          $('#bubble').addClass('bubble-warning')
+        }
       }
     }else{
       console.log('SECOND CLICK');
@@ -161,8 +171,9 @@ class Question extends Component{
       isNoCubeOk = false;
       this.setState({
         selectedRadio: '',
-        displayEval: 'none',
-        buttonText: 'Fertig'
+        buttonText: 'Fertig',
+        evaluation: 'Wähle eine der Antworten aus!',
+        heading: ''
       })
       this.props.nextFunc()
     }
@@ -201,7 +212,7 @@ class Question extends Component{
       if(!isNoCubeOk){ // make sure user is ok with adding e.g. no sugar cubes
         console.log('COLA question')
         toastType = 'warning';
-        toastMsg = 'Du hast keinen Zuckerwürfel in das Feld gezogen! Passt das so? Dann klicke nochmal den FERTIG Button.';
+        toastMsg = 'Du hast keinen Zuckerwürfel in das Feld gezogen! Passt das so? Dann klicke nochmal auf den FERTIG Button.';
         isNoCubeOk = true;
         this.setState({
           selectedRadio: selRadio
@@ -211,6 +222,11 @@ class Question extends Component{
       }
     }else{
       optionSelected = true;
+      if(answerisNum){
+        this.setState({
+          selectedRadio: selRadio
+        })
+      }
     }
 
     let resultMap = new Map({
@@ -234,41 +250,53 @@ class Question extends Component{
       children.removeClass('drag-drop')
     }
 
-    let evaluation = '';
+    let evaluation = '', heading = '';
 
     if(correctAnswer !== givenAnswer){
       $('.clicked').css('background', 'orangered')
+      heading = 'Schade...'
       if(answerisNum){
-        evaluation = `Schade, deine Antwort war leider nicht richtig! Richtig wäre die Zahl ${correctAnswer}!`;
+        evaluation = `... deine Antwort war leider nicht richtig! Richtig wäre die Zahl ${correctAnswer}!`;
       }else{
-        evaluation = `Schade, deine Antwort war leider nicht richtig! Richtig wäre Antwort ${correctAnswer} - ${this.props.question[correctAnswer]}!`
+        evaluation = `... deine Antwort war leider nicht richtig! Richtig wäre Antwort ${correctAnswer} - ${this.props.question[correctAnswer]}!`
       }
     }else{
       $('.clicked').css('background', 'yellowgreen')
-      evaluation = 'Super! Du hast diese Frage richtig beantwortet.'
+      heading = 'Super!'
+      evaluation = 'Du hast diese Frage richtig beantwortet.'
     }
+
+    $('#bubble').removeClass('bubble-danger')
+    $('#bubble').removeClass('bubble-warning')
 
     this.setState({
       evaluation: evaluation,
-      displayEval: 'flex',
+      heading: heading,
       buttonText: 'Weiter'
     })
   }
 
   renderStart(){
     return(
-      <Start clickFunc={this.handleNextStartEnd}/>
+      <Wrapper>
+        <Start clickFunc={this.handleNextStartEnd}/>
+        <HelperSection heading={'Hallo!'} text={'Willst du das Quiz starten?'}/>
+      </Wrapper>
     )
   }
 
   renderEnd(){
     return(
-      <Evaluation correctAnswers={this.props.answerMap} givenAnswers={new Map(this.props.questions)} clickFunc={this.handleNextStartEnd}/>
+      <Wrapper>
+        <Evaluation correctAnswers={this.props.answerMap} givenAnswers={new Map(this.props.questions)} clickFunc={this.handleNextStartEnd}/>
+        <HelperSection heading={'Das wars schon!'} text={'Hier kannst du noch einmal sehen welche Fragen du richtig beantwortet hast und welche du dir noch einmal ansehen könntest.'}/>
+      </Wrapper>
     )
   }
 
   setItemsDropped(itemsDropped){
     this.itemsDropped = itemsDropped;
+    console.log(itemsDropped)
   }
 
   getCubeCount(){
@@ -325,7 +353,8 @@ class Question extends Component{
         b = question.b,
         c = question.c,
         d = question.d,
-        radioName = 'q' + question.nr,
+        questionNr = question.nr,
+        radioName = 'q' + questionNr,
         images = question.images,
         header = images.header ? images.header : '';
 
@@ -336,31 +365,35 @@ class Question extends Component{
     }
 
     let headerImg = header !== '' ? <HeaderImg src={this.getImg(header)} alt='' /> : null;
-    let {displayEval, evaluation, buttonText} = this.state;
+    let {evaluation, buttonText, heading} = this.state;
 
     if(!a){
       return(
         <Wrapper id={'question'}>
-          <h3>Frage:</h3>
-          <p>{frage}</p>
-          <img style={{height: '7rem'}} src={cola} alt=''/>
-          <DragAndDrop dropzoneText={question.dropzoneText} numAnswers={question.numAnswers} setItemsDropped={this.setItemsDropped}/>
-          <Button text={buttonText} clickFunc={this.handleNextClick}/>
-          <QuestionEvaluation id={'question-evaluation'} display={displayEval} evaluation={evaluation}/>
+          <Content>
+            <h3>Frage:</h3>
+            <p>{frage}</p>
+            <img style={{height: '7rem'}} src={cola} alt=''/>
+            <DragAndDrop dropzoneText={question.dropzoneText} numAnswers={question.numAnswers} setItemsDropped={this.setItemsDropped}/>
+            <Button text={buttonText} clickFunc={this.handleNextClick}/>
+          </Content>
+          <HelperSection heading={heading} text={evaluation} questionNr={questionNr}/>
         </Wrapper>
       );
     }
     return(
       <Wrapper id={'question'}>
-        <h3>Frage:</h3>
-        <p>{frage}</p>
-        {headerImg}
-        <AllAnswers onClick={(e) => this.handleClickChange(e)}>
-          {this.answerList}
-        </AllAnswers>
-        <br/>
-        <Button text={buttonText} clickFunc={this.handleNextClick}/>
-        <QuestionEvaluation id={'question-evaluation'} display={displayEval} evaluation={evaluation}/>
+        <Content>
+          <h3>Frage:</h3>
+          <p>{frage}</p>
+          {headerImg}
+          <AllAnswers onClick={(e) => this.handleClickChange(e)}>
+            {this.answerList}
+          </AllAnswers>
+          <br/>
+          <Button text={buttonText} clickFunc={this.handleNextClick}/>
+        </Content>
+        <HelperSection heading={heading} text={evaluation} questionNr={questionNr}/>
       </Wrapper>
     );
   }

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Text from './Text';
 import Heading from './Heading';
-import Wrapper from '../Wrapper';
+import Content from '../Content';
 import Logo from '../../../containers/HomeScreen/Logo';
 import Button from '../../Button';
 import logo from '../../../images/QuizMate.png';
@@ -11,7 +11,7 @@ import logo from '../../../images/QuizMate.png';
 class Start extends Component{
   render(){
     return(
-      <Wrapper>
+      <Content>
         <Logo src={logo} alt={'Logo'}/>
         <Heading> Willkommen zu QuizMate!</Heading>
         <Text>
@@ -21,7 +21,7 @@ class Start extends Component{
           Klicke den "Start"-Button um das Quiz gleich zu beginnen:
         </Text>
         <Button text={'Start'} clickFunc={this.props.clickFunc}/>
-      </Wrapper>
+      </Content>
     );
   }
 }
