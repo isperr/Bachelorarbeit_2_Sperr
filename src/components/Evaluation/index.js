@@ -7,6 +7,7 @@ import Text from './Text'
 import QuestionText from './QuestionText'
 import Content from './Content';
 import MiniHeading from './MiniHeading';
+import HorizontalLine from './HorizontalLine';
 import Button from '../Button';
 import Questions from '../../utils/questions.json';
 
@@ -84,13 +85,13 @@ class Evaluation extends Component{
   render(){
     return(
       <Wrapper>
-        <h2>Das wars!</h2>
+        <h2>Dein Ergebnis:</h2>
         <Content>
           <Text>Du hast {this.state.correctGivenAnswerCount} von 5 Fragen richtig beantwortet! </Text>
-          <Text>Hier kannst du noch einmal sehen welche richtig waren und welche du dir noch einmal ansehen könntest: </Text>
           {this.state.resultList}
         </Content>
-        <b>Willst du das Quiz noch einmal starten?</b>
+        <HorizontalLine />
+        <b style={{marginBottom: '1rem'}}>Willst du das Quiz noch einmal starten?</b>
         <Button text={'Zurück zum Anfang'} clickFunc={this.props.clickFunc}/>
       </Wrapper>
     );
