@@ -3,7 +3,7 @@ import {WHITE} from '../../styles/variables'
 
 const Dropzone = styled.div`
   color: ${WHITE};
-  background-color: #6f6f6f;
+  background-color: #969696;
   border: dashed 4px transparent;
   border-radius: 4px;
   /* margin: 10px auto 30px; */
