@@ -5,6 +5,8 @@ import StartZone from './StartZone';
 import DropZone from './DropZone';
 import DropZoneWrapper from './DropZoneWrapper';
 import Food from './Food';
+import CategoryWrapper from './CategoryWrapper';
+import Category from './Category';
 import fruits_veggies from '../../images/fruits_veggies.png';
 import chocolate_sweets from '../../images/chocolate_sweets.png';
 import burger_fries from '../../images/burger_fries.png';
@@ -109,15 +111,17 @@ class DragFields extends Component{
         <StartZone id={"start-dropzone"} onDrop={(e) => this.drop(e)} onDragOver={(e) => this.allowDrop(e)}>
           {this.imgList}
         </StartZone>
+        <CategoryWrapper>
+          <Category>Das ist sehr gut und man kann es immer essen:</Category>
+          <Category>Das kann man ab und zu essen:</Category>
+          <Category>Das sollte man nicht so oft oder gar nicht essen:</Category>
+        </CategoryWrapper>
         <DropZoneWrapper>
           <DropZone id={'dropzone-1'} onDrop={(e) => this.drop(e)} onDragOver={(e) => this.allowDrop(e)}>
-            Das ist sehr gut und man kann es immer essen:
           </DropZone>
           <DropZone id={'dropzone-2'} onDrop={(e) => this.drop(e)} onDragOver={(e) => this.allowDrop(e)}>
-            Das kann man ab und zu essen:
           </DropZone>
           <DropZone id={'dropzone-3'} onDrop={(e) => this.drop(e)} onDragOver={(e) => this.allowDrop(e)}>
-            Das sollte man nicht so oft oder gar nicht essen:
           </DropZone>
         </DropZoneWrapper>
       </Wrapper>
