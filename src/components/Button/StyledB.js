@@ -14,6 +14,7 @@ const StyledB = styled.button`
   min-width: 7rem;
 
   :hover{
+    cursor: pointer;
   }
 
   :active {
