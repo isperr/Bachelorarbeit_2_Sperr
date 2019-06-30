@@ -94,6 +94,7 @@ class Evaluation extends Component{
             evalText.push(<QuestionText key={k}>Super, du hast alle Lebensmittel richtig zugeordnet! {corrAnswerVal}</QuestionText>)
           }else{ // some mistakes were made
             evalText.push(<QuestionText key={k}>Leider war deine Antwort nicht ganz richtig! {corrAnswerVal}</QuestionText>)
+            backgroundColor = 'orangered';
           }
         }else{
           evalText.push(<QuestionText key={k}>Leider war deine Antwort falsch! - Richtig wäre: {correctAnswerVal}</QuestionText>)
