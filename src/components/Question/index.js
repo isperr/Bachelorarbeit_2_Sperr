@@ -12,6 +12,7 @@ import DragAndDrop from '../DragAndDrop';
 import Evaluation from '../Evaluation';
 import Start from './Start'
 import HelperSection from '../HelperSection';
+import DragFields from '../DragFields';
 import cola from '../../images/cola.png';
 import sweet_foods from '../../images/sweet_foods.jpg';
 import teeth from '../../images/teeth.jpg';
@@ -47,11 +48,16 @@ class Question extends Component{
     this.setItemsDropped = this.setItemsDropped.bind(this);
     this.createAnswers = this.createAnswers.bind(this);
     this.getImg = this.getImg.bind(this);
+    this.setDropzones = this.setDropzones.bind(this);
+    this.checkDragAndDrop = this.checkDragAndDrop.bind(this);
     this.state = {
       selectedRadio: '',
       buttonText: 'Fertig',
       evaluation: 'Wähle eine der Antworten aus!',
-      heading: ''
+      heading: '',
+      dropzones: {
+
+      }
     }
     this.cubeCount = 0;
     this.itemsDropped = new Map();
@@ -128,13 +134,22 @@ class Question extends Component{
   }
 
   handleNextClick(){
-
     let selectedRadio = this.state.selectedRadio;
 
     if(firstClick){
       console.log('This is the firstClick');
-      let check = this.checkIfOptionsSelected(selectedRadio),
-          optionIsSelected = check.get('optionSelected'),
+      let questionType = this.props.question.type,
+          check = new Map();
+
+      if(questionType === 'dragfields'){
+        check = this.checkDragFields()
+      }else if(questionType === 'draganddrop'){
+        check = this.checkDragAndDrop(selectedRadio)
+      }else{
+        check = this.checkIfOptionsSelected(selectedRadio)
+      }
+
+      let optionIsSelected = check.get('optionSelected'),
           toastType = check.get('toastType'),
           toastMsg = check.get('toastMsg');
 
@@ -195,20 +210,35 @@ class Question extends Component{
     let optionSelected = false,
         toastType = '',
         toastMsg = '',
-        selRadio = selectedRadio,
-        currAnswer = this.props.question.antwort;
-
-    let answerisNum = this.checkIsNum(currAnswer); // check if correct answer is num - and not a, b, c or d
-
-    if(answerisNum){
-      selRadio = this.getCubeCount();
-    }
+        selRadio = selectedRadio;
 
     if(selRadio === ''){
       console.log('DONT GO FURTHER if no option is selected')
       toastType = 'error';
       toastMsg = 'Du musst eine Option auswählen um fortzufahren!';
-    }else if(selRadio === '0'){
+    }else{
+      optionSelected = true;
+      this.setState({
+        selectedRadio: selRadio
+      })
+    }
+
+    let resultMap = new Map({
+      optionSelected: optionSelected,
+      toastType: toastType,
+      toastMsg: toastMsg
+    })
+
+    return resultMap;
+  }
+
+  checkDragAndDrop(selectedRadio){
+    let optionSelected = false,
+        toastType = '',
+        toastMsg = '',
+        selRadio = this.getCubeCount();
+
+    if(selRadio === '0'){
       if(!isNoCubeOk){ // make sure user is ok with adding e.g. no sugar cubes
         console.log('COLA question')
         toastType = 'warning';
@@ -222,15 +252,51 @@ class Question extends Component{
       }
     }else{
       optionSelected = true;
-      if(answerisNum){
-        this.setState({
-          selectedRadio: selRadio
-        })
-      }
+      this.setState({
+        selectedRadio: selRadio
+      })
     }
 
     let resultMap = new Map({
       optionSelected: optionSelected,
+      toastType: toastType,
+      toastMsg: toastMsg
+    })
+
+    return resultMap;
+  }
+
+  checkDragFields(){
+    let allDropped = true,
+        toastType = '',
+        toastMsg = '',
+        dropzones = fromJS(this.state.dropzones);
+
+    dropzones.map((v, k) => {
+      console.log("o." + k + " = " + v);
+      if(v === '' || v === 'start-dropzone'){
+        allDropped = false;
+      }
+      return true; // satisfy arrow-func
+    })
+
+    if(!allDropped){
+      toastType = 'error';
+      toastMsg = 'Bitte ordne alle Lebensmittel den Kategorien zu um fortzufahren!';
+    }else{
+      let updatedDropzones = new Map();
+      dropzones.map((v, k) => {
+        let res = v.split("-");
+        updatedDropzones = updatedDropzones.set(k, res[1]);
+        return true; // satisfy arrow-func
+      })
+      this.setState({
+        selectedRadio: updatedDropzones.toJS()
+      })
+    }
+
+    let resultMap = new Map({
+      optionSelected: allDropped,
       toastType: toastType,
       toastMsg: toastMsg
     })
@@ -255,15 +321,24 @@ class Question extends Component{
     if(correctAnswer !== givenAnswer){
       $('.clicked').css('background', 'orangered')
       heading = 'Schade...'
-      if(answerisNum){
-        evaluation = `... deine Antwort war leider nicht richtig! Richtig wäre die Zahl ${correctAnswer}!`;
+      if(this.props.question.type === 'draganddrop'){
+        evaluation = `... deine Anzahl war leider nicht ganz richtig! Richtig wäre die Zahl ${correctAnswer}!`;
+      }else if(this.props.question.type === 'dragfields'){
+        evaluation = `... du hast leider ein oder mehrere Dinge nicht richtig zugeordnet.`;
       }else{
         evaluation = `... deine Antwort war leider nicht richtig! Richtig wäre Antwort ${correctAnswer} - ${this.props.question[correctAnswer]}!`
       }
     }else{
       $('.clicked').css('background', 'yellowgreen')
       heading = 'Super!'
-      evaluation = 'Du hast diese Frage richtig beantwortet.'
+      if(this.props.question.type === 'dragfields'){
+        evaluation = 'Du hast alle Lebensmittel richtig zugeordnet.';
+      }else if(this.props.question.type === 'draganddrop'){
+        evaluation = 'Du hast die richtige Anzahl an Würfel getippt.'
+      }else{
+        evaluation = 'Du hast diese Frage richtig beantwortet.'
+      }
+
     }
 
     $('#bubble').removeClass('bubble-danger')
@@ -336,6 +411,12 @@ class Question extends Component{
     this.answerList = tempList;
   }
 
+  setDropzones(updatedDropzones){
+    this.setState({
+      dropzones: updatedDropzones
+    })
+  }
+
   render(){
     let {isStartEnd, question} = this.props;
     if(isStartEnd === 'start'){
@@ -353,6 +434,7 @@ class Question extends Component{
         b = question.b,
         c = question.c,
         d = question.d,
+        type = question.type,
         questionNr = question.nr,
         radioName = 'q' + questionNr,
         images = question.images,
@@ -367,11 +449,11 @@ class Question extends Component{
     let headerImg = header !== '' ? <HeaderImg src={this.getImg(header)} alt='' /> : null;
     let {evaluation, buttonText, heading} = this.state;
 
-    if(!a){
+    if(type === 'draganddrop'){
       return(
         <Wrapper id={'question'}>
           <Content>
-            <h3>Frage:</h3>
+            <h3>Frage {questionNr}:</h3>
             <p>{frage}</p>
             <img style={{height: '7rem'}} src={cola} alt=''/>
             <DragAndDrop dropzoneText={question.dropzoneText} numAnswers={question.numAnswers} setItemsDropped={this.setItemsDropped}/>
@@ -381,10 +463,23 @@ class Question extends Component{
         </Wrapper>
       );
     }
+
+    if(type === 'dragfields'){
+      return(
+        <Wrapper>
+          <Content>
+            <DragFields question={question} setDropzones={this.setDropzones}/>
+            <Button text={buttonText} clickFunc={this.handleNextClick}/>
+          </Content>
+          <HelperSection heading={heading} text={evaluation} questionNr={questionNr}/>
+        </Wrapper>
+      )
+    }
+
     return(
       <Wrapper id={'question'}>
         <Content>
-          <h3>Frage:</h3>
+          <h3>Frage {questionNr}:</h3>
           <p>{frage}</p>
           {headerImg}
           <AllAnswers onClick={(e) => this.handleClickChange(e)}>
