@@ -12,7 +12,8 @@
       "b": "burger_fries",
       "c": "fruits_veggies",
       "d": "pizza"
-    }
+    },
+    "type": "regular"
   },
   "2": {
     "nr": "2",
@@ -23,7 +24,8 @@
     "images": {
       "question": "cola",
       "answer": "cube"
-    }
+    },
+    "type": "draganddrop"
   },
   "3": {
     "nr": "3",
@@ -33,7 +35,8 @@
     "b": "Falsch, man sollte sich abwechslungsreich ernähren und auf Obst und Gemüse nicht vergessen!",
     "images": {
       "header": "sweet_foods"
-    }
+    },
+    "type": "regular"
   },
   "4": {
     "nr": "4",
@@ -45,7 +48,8 @@
     "d": "2 bis 3 mal täglich, immer nach den Mahlzeiten",
     "images": {
       "header": "teeth"
-    }
+    },
+    "type": "regular"
   },
   "5": {
     "nr": "5",
@@ -55,6 +59,24 @@
     "b": "Ja. Vor allem die Vitamine A, C und E helfen unserem Gehirn beim Arbeiten.",
     "images": {
       "header": "vitamins"
-    }
+    },
+    "type": "regular"
+  },
+  "6": {
+    "nr": "6",
+    "frage": "Ordne die Lebensmittel den entsprechenden Kategorien zu.",
+    "antwort": {
+      "chocolate_sweets": "2",
+      "burger_fries": "3",
+      "fruits_veggies": "1",
+      "pizza": "2"
+    },
+    "images": [
+      "chocolate_sweets",
+      "burger_fries",
+      "fruits_veggies",
+      "pizza"
+    ],
+    "type": "dragfields"
   }
 }
