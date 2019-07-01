@@ -3,7 +3,7 @@ import img from '../../images/basket.png';
 
 const DropZone = styled.div`
   border: 1px solid #333;
-  min-height: 15rem;
+  min-height: 20rem;
   height: fit-content
   width: 30%;
   display: flex;
