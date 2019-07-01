@@ -1,10 +1,8 @@
 import styled from 'styled-components';
 
 const LineText = styled.p`
-  position: fixed;
   font-size: small;
-  /* bottom: 13rem; */
-  margin-top: -0.8rem;
+  margin-top: .7rem;
   z-index: 2;
   color: #f6f6f6;
 

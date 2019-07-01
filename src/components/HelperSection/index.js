@@ -7,8 +7,9 @@ import BubbleHeading from './BubbleHeading';
 import BubbleText from './BubbleText';
 import Bubble from './Bubble';
 import LineWrapper from './LineWrapper';
+import ProgressBar from './ProgressBar';
 import { Line } from 'rc-progress';
-import {OLIVE, LIGHT_GRAY} from '../../styles/variables';
+import {LIGHT_GRAY, YELLOW} from '../../styles/variables';
 import watermelon from '../../images/watermelon.png';
 
 class HelperSection extends Component{
@@ -28,7 +29,7 @@ class HelperSection extends Component{
       lineText = <LineText>Aktuelle Frage: {questionNr} von {questionCount}</LineText>;
       line =
         <LineWrapper>
-          <Line percent={percent} strokeWidth="12.5" strokeColor={OLIVE} trailWidth="12.5" trailColor={LIGHT_GRAY}/>
+          <Line percent={percent} strokeWidth="8.5" strokeColor={YELLOW} trailWidth="8.5" trailColor={LIGHT_GRAY}/>
         </LineWrapper>;
     }
 
@@ -39,8 +40,10 @@ class HelperSection extends Component{
           <BubbleText>{text}</BubbleText>
         </Bubble>
         <HelperAvatar src={watermelon}/>
-        {lineText}
-        {line}
+        <ProgressBar>
+          {line}
+          {lineText}
+        </ProgressBar>
       </Wrapper>
     );
   }
