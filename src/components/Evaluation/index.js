@@ -38,10 +38,11 @@ class Evaluation extends Component{
         tempList = [];
     let questions = fromJS(Questions);
     let dragfieldsImages = new Map({
-      'burger_fries': 'Burger und Pommes',
-      'chocolate_sweets': 'Schokolade und kleine Süßigkeiten',
-      'fruits_veggies': 'Obst und Gemüse',
-      'pizza': 'Pizza'
+      'apple': 'Apfel',
+      'carrot': 'Karotte',
+      'sweets': 'Zuckerl und andere kleine Süßigkeiten',
+      'donuts': 'Donuts',
+      'hotdog': 'Hotdog'
     });
     let dragfieldsZones = new Map({
       '1': 'Gut',
@@ -92,6 +93,7 @@ class Evaluation extends Component{
 
           if(evalWrong.length === 0){// no mistakes were made
             evalText.push(<QuestionText key={k}>Super, du hast alle Lebensmittel richtig zugeordnet! {corrAnswerVal}</QuestionText>)
+            correctGivenAnswerCount = correctGivenAnswerCount + 1;
           }else{ // some mistakes were made
             evalText.push(<QuestionText key={k}>Leider war deine Antwort nicht ganz richtig! {corrAnswerVal}</QuestionText>)
             backgroundColor = 'orangered';
@@ -157,7 +159,7 @@ class Evaluation extends Component{
       <Wrapper>
         <h2>Dein Ergebnis:</h2>
         <Content>
-          <Text>Du hast {this.state.correctGivenAnswerCount} von 5 Fragen richtig beantwortet! </Text>
+          <Text>Du hast {this.state.correctGivenAnswerCount} von 7 Fragen richtig beantwortet! </Text>
           <LinkButton onClick={(e) => this.showHideEvaluation(e)} id={'showResults'}>Zeig meine Ergebnisse an</LinkButton>
           <div style={{display: showResults, flexDirection: 'column'}}>
             {this.state.resultList}
