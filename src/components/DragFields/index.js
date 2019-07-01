@@ -7,10 +7,11 @@ import DropZoneWrapper from './DropZoneWrapper';
 import Food from './Food';
 import CategoryWrapper from './CategoryWrapper';
 import Category from './Category';
-import fruits_veggies from '../../images/fruits_veggies.png';
-import chocolate_sweets from '../../images/chocolate_sweets.png';
-import burger_fries from '../../images/burger_fries.png';
-import pizza from '../../images/pizza.png';
+import apple from '../../images/apple.png';
+import sweets from '../../images/sweets.png';
+import carrot from '../../images/carrot.png';
+import donuts from '../../images/donuts.png';
+import hotdog from '../../images/hotdog.png';
 
 class DragFields extends Component{
   constructor(props){
@@ -68,14 +69,16 @@ class DragFields extends Component{
 
   getImg(img){
     switch (img) {
-      case 'burger_fries':
-        return burger_fries;
-      case 'chocolate_sweets':
-        return chocolate_sweets;
-      case 'fruits_veggies':
-        return fruits_veggies;
-      case 'pizza':
-        return pizza;
+      case 'apple':
+        return apple;
+      case 'carrot':
+        return carrot;
+      case 'sweets':
+        return sweets;
+      case 'donuts':
+        return donuts;
+      case 'hotdog':
+        return hotdog;
       default:
         console.log('no img found');
     }
@@ -112,8 +115,8 @@ class DragFields extends Component{
           {this.imgList}
         </StartZone>
         <CategoryWrapper>
-          <Category>Das ist sehr gut und man kann es immer essen:</Category>
-          <Category>Das kann man ab und zu essen:</Category>
+          <Category>Das ist sehr gut und man kann es jeden Tag essen:</Category>
+          <Category>Das kann man problemlos ab und zu essen:</Category>
           <Category>Das sollte man nicht so oft oder gar nicht essen:</Category>
         </CategoryWrapper>
         <DropZoneWrapper>
