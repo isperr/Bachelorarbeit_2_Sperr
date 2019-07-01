@@ -21,6 +21,11 @@ import burger_fries from '../../images/burger_fries.png';
 import chocolate_sweets from '../../images/chocolate_sweets.png';
 import fruits_veggies from '../../images/fruits_veggies.png';
 import pizza from '../../images/pizza.png';
+import gaming from '../../images/gaming.png';
+import reading from '../../images/reading.png';
+import nature from '../../images/nature.png';
+import tv from '../../images/tv.png';
+
 
 import $ from 'jquery';
 
@@ -80,6 +85,14 @@ class Question extends Component{
         return fruits_veggies;
       case 'pizza':
         return pizza;
+      case 'reading':
+        return reading;
+      case 'nature':
+        return nature;
+      case 'gaming':
+        return gaming;
+      case 'tv':
+        return tv;
       default:
         console.log('no img found');
     }
