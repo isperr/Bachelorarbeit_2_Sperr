@@ -316,6 +316,25 @@ class Question extends Component{
       children.removeClass('drag-drop')
     }
 
+    let sortedGivenAnswers = new Map(),
+        sortedCorrectAnswers = new Map();
+
+    if(this.props.question.type === 'dragfields'){
+      let givenAnswers = new Map(),
+          dropzones = fromJS(this.state.dropzones);
+
+      dropzones.map((v, k) => {
+        let res = v.split("-");
+        givenAnswers = givenAnswers.set(k, res[1]);
+        return true; // satisfy arrow-func
+      })
+
+      let correctAnswers = fromJS(correctAnswer);
+
+      sortedGivenAnswers = givenAnswers.toOrderedMap().sortBy((v, k) => k);
+      sortedCorrectAnswers = correctAnswers.toOrderedMap().sortBy((v, k) => k);
+    }
+
     let evaluation = '', heading = '';
 
     if(correctAnswer !== givenAnswer){
@@ -323,8 +342,6 @@ class Question extends Component{
       heading = 'Schade...'
       if(this.props.question.type === 'draganddrop'){
         evaluation = `... deine Anzahl war leider nicht ganz richtig! Richtig wäre die Zahl ${correctAnswer}!`;
-      }else if(this.props.question.type === 'dragfields'){
-        evaluation = `... du hast leider ein oder mehrere Dinge nicht richtig zugeordnet.`;
       }else{
         evaluation = `... deine Antwort war leider nicht richtig! Richtig wäre Antwort ${correctAnswer} - ${this.props.question[correctAnswer]}!`
       }
@@ -338,8 +355,29 @@ class Question extends Component{
       }else{
         evaluation = 'Du hast diese Frage richtig beantwortet.'
       }
-
     }
+
+    if(this.props.question.type === 'dragfields'){
+      let mistakesMade = false;
+
+      sortedGivenAnswers.map((v, k) =>{
+        let correctVal = sortedCorrectAnswers.get(k);
+        if(v !== correctVal){
+          mistakesMade = true;
+        }
+        return true; // satisfy arrow-func
+      })
+
+      $('.clicked').css('background', 'orangered')
+      if(mistakesMade){
+        heading = 'Schade...'
+        evaluation = `... du hast leider ein oder mehrere Dinge nicht richtig zugeordnet.`;
+      }else{
+        $('.clicked').css('background', 'yellowgreen')
+        heading = 'Super!'
+        evaluation = `... du hast alle Lebensmittel richtig zugeordnet!`;
+      }
+   }
 
     $('#bubble').removeClass('bubble-danger')
     $('#bubble').removeClass('bubble-warning')
