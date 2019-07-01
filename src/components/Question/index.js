@@ -450,6 +450,9 @@ class Question extends Component{
     let {evaluation, buttonText, heading} = this.state;
 
     if(type === 'draganddrop'){
+      if(evaluation === 'Wähle eine der Antworten aus!'){
+        evaluation = 'Ziehe Würfel in das graue Feld um diese Frage zu beantworten!';
+      }
       return(
         <Wrapper id={'question'}>
           <Content>
@@ -465,6 +468,9 @@ class Question extends Component{
     }
 
     if(type === 'dragfields'){
+      if(evaluation === 'Wähle eine der Antworten aus!'){
+        evaluation = 'Ziehe alle Lebensmittel in die Körbe!';
+      }
       return(
         <Wrapper>
           <Content>
