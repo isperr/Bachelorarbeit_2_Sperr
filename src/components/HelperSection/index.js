@@ -60,7 +60,7 @@ HelperSection.defaultProps = {
   heading: '',
   text: '',
   questionNr: '0',
-  questionCount: 6
+  questionCount: 7
 };
 
 export default HelperSection;
